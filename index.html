@@ -282,7 +282,8 @@ function startGame() {
   });
   if (players.length < 3) return;
 
-  secretWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+  const wordObj = WORDS[Math.floor(Math.random() * WORDS.length)];
+  secretWord = wordObj;
   impostorIndex = Math.floor(Math.random() * players.length);
   currentPlayerIndex = 0;
 
@@ -305,7 +306,11 @@ function showReveal() {
   document.getElementById('reveal-name').textContent = p.name;
 
   const wordEl = document.getElementById('reveal-word');
-  wordEl.textContent = isImpostor ? 'IMPOSTOR' : secretWord;
+  if (isImpostor) {
+    wordEl.innerHTML = 'IMPOSTOR';
+  } else {
+    wordEl.innerHTML = secretWord.en + '<br><span style="font-size:0.55em;opacity:0.7;-webkit-text-fill-color:#888;">' + secretWord.de + '</span>';
+  }
   wordEl.className = isImpostor ? 'word impostor-word' : 'word';
 
   const card = document.getElementById('word-card');
