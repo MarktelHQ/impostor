@@ -6,9 +6,18 @@
 <title>Impostor Game</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 100%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 0%; }
+    100% { background-position: 0% 50%; }
+  }
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #e84393 60%, #fd79a8 80%, #fdcb6e 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -44,6 +53,7 @@
     width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     font-size: 20px; color: #fff; font-weight: bold;
+    overflow: hidden;
   }
   .player-row input {
     flex: 1; padding: 12px 16px; border-radius: 12px; border: 2px solid #e0e0e0;
@@ -192,16 +202,23 @@
 <div class="confetti-container" id="confetti-container"></div>
 
 <script>
-const AVATARS = [
-  { emoji: '🐱', bg: '#ff6b6b' },
-  { emoji: '🐶', bg: '#feca57' },
-  { emoji: '🦊', bg: '#ff9f43' },
-  { emoji: '🐸', bg: '#00b894' },
-  { emoji: '🐧', bg: '#54a0ff' },
-  { emoji: '🦄', bg: '#a29bfe' },
-  { emoji: '🐼', bg: '#636e72' },
-  { emoji: '🐯', bg: '#e17055' },
+const AVATAR_IMAGES = [
+  'https://impostor-seven-tau.vercel.app/image1.png',
 ];
+const AVATAR_BGS = ['#ff6b6b','#feca57','#ff9f43','#00b894','#54a0ff','#a29bfe','#636e72','#e17055'];
+let shuffledAvatars = [];
+
+function shuffleAvatars(count) {
+  const indices = Array.from({length: count}, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  shuffledAvatars = indices.map(i => ({
+    img: AVATAR_IMAGES[i % AVATAR_IMAGES.length],
+    bg: AVATAR_BGS[i]
+  }));
+}
 
 const WORDS = [
   { en: 'Banana', de: 'Banane' },
@@ -307,11 +324,11 @@ function addPlayer() {
   if (count >= 8) return;
   const inputs = document.getElementById('player-inputs');
   const i = count;
-  const av = AVATARS[i];
+  const bg = AVATAR_BGS[i];
   const row = document.createElement('div');
   row.className = 'player-row';
   row.innerHTML = `
-    <div class="avatar-small" style="background:${av.bg}">${av.emoji}</div>
+    <div class="avatar-small" style="background:${bg}"><img src="${AVATAR_IMAGES[i % AVATAR_IMAGES.length]}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
     <input type="text" placeholder="Player ${i + 1}" maxlength="16" class="player-name-input">
     ${i >= 3 ? `<button class="remove-btn" onclick="removePlayer(this)">×</button>` : ''}
   `;
@@ -328,9 +345,9 @@ function removePlayer(btn) {
 function refreshAvatars() {
   const rows = document.querySelectorAll('.player-row');
   rows.forEach((row, i) => {
-    const av = AVATARS[i];
-    row.querySelector('.avatar-small').style.background = av.bg;
-    row.querySelector('.avatar-small').textContent = av.emoji;
+    const bg = AVATAR_BGS[i];
+    row.querySelector('.avatar-small').style.background = bg;
+    row.querySelector('.avatar-small').innerHTML = `<img src="${AVATAR_IMAGES[i % AVATAR_IMAGES.length]}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
     row.querySelector('input').placeholder = `Player ${i + 1}`;
     const rm = row.querySelector('.remove-btn');
     if (i < 3 && rm) rm.remove();
@@ -355,7 +372,7 @@ function startGame() {
   const inputs = document.querySelectorAll('.player-name-input');
   players = [];
   inputs.forEach((inp, i) => {
-    players.push({ name: inp.value.trim() || `Player ${i + 1}`, avatar: AVATARS[i] });
+    players.push({ name: inp.value.trim() || `Player ${i + 1}`, img: AVATAR_IMAGES[i % AVATAR_IMAGES.length], bg: AVATAR_BGS[i] });
   });
   if (players.length < 3) return;
 
@@ -371,15 +388,15 @@ function startGame() {
 function updateReady() {
   const p = players[currentPlayerIndex];
   document.getElementById('ready-name').innerHTML =
-    `Pass the device to <strong>${p.name}</strong> ${p.avatar.emoji}`;
+    `Pass the device to <strong>${p.name}</strong><br><img src="${p.img}" style="width:60px;height:60px;border-radius:50%;margin-top:10px;object-fit:cover;">`;
 }
 
 function showReveal() {
   const p = players[currentPlayerIndex];
   const isImpostor = currentPlayerIndex === impostorIndex;
 
-  document.getElementById('reveal-avatar').textContent = p.avatar.emoji;
-  document.getElementById('reveal-avatar').style.background = p.avatar.bg;
+  document.getElementById('reveal-avatar').innerHTML = `<img src="${p.img}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  document.getElementById('reveal-avatar').style.background = p.bg;
   document.getElementById('reveal-name').textContent = p.name;
 
   const wordEl = document.getElementById('reveal-word');
@@ -419,7 +436,7 @@ function showGoScreen() {
   const list = document.getElementById('players-list');
   list.innerHTML = '';
   players.forEach(p => {
-    list.innerHTML += `<div class="player-chip"><div class="chip-avatar" style="background:${p.avatar.bg}">${p.avatar.emoji}</div>${p.name}</div>`;
+    list.innerHTML += `<div class="player-chip"><div class="chip-avatar" style="background:${p.bg}"><img src="${p.img}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>${p.name}</div>`;
   });
   showScreen('screen-go');
   launchConfetti();
