@@ -153,20 +153,13 @@
     </div>
   </div>
 
-  <div class="screen" id="screen-ready">
-    <div class="ready-screen-icon">&#x1F4F1;</div>
-    <p class="ready-name" id="ready-name">Pass the device to...</p>
-    <button class="btn btn-primary" id="btn-ready" onclick="showReveal()">I'm Ready!</button>
-  </div>
-
   <div class="screen" id="screen-reveal">
     <div class="reveal-avatar" id="reveal-avatar"></div>
     <div class="reveal-name" id="reveal-name">Player</div>
     <div class="word-card" id="word-card" onclick="revealWord()">
-      <div class="tap-text">&#x1F446; Tap to see your word</div>
+      <div class="tap-text">&#x2728; Show Word / Wort Zeigen &#x2728;</div>
       <div class="word" id="reveal-word">WORD</div>
     </div>
-    <p class="pass-info" id="pass-info">Remember your word, then pass the device!</p>
     <button class="btn btn-success" id="btn-next" onclick="nextPlayer()" style="display:none;">&#x2705; Got it! Next &#x2192;</button>
   </div>
 
@@ -312,15 +305,10 @@ function startGame() {
   impostorIndex = Math.floor(Math.random() * players.length);
   currentPlayerIndex = 0;
 
-  showScreen('screen-ready');
-  updateReady();
+  showReveal();
 }
 
-function updateReady() {
-  var p = players[currentPlayerIndex];
-  document.getElementById('ready-name').innerHTML =
-    'Pass the device to <strong>'+p.name+'</strong><br><img src="'+p.img+'" style="width:60px;height:60px;border-radius:50%;margin-top:10px;object-fit:cover;">';
-}
+
 
 function showReveal() {
   var p = players[currentPlayerIndex];
@@ -341,7 +329,6 @@ function showReveal() {
 
   document.getElementById('word-card').classList.remove('revealed');
   document.getElementById('btn-next').style.display = 'none';
-  document.getElementById('pass-info').style.display = 'block';
   showScreen('screen-reveal');
 }
 
@@ -357,8 +344,7 @@ function nextPlayer() {
   if (currentPlayerIndex >= players.length) {
     showGoScreen();
   } else {
-    showScreen('screen-ready');
-    updateReady();
+    showReveal();
   }
 }
 
