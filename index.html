@@ -45,8 +45,6 @@
   .subtitle { color: #888; margin-bottom: 24px; font-size: 1em; }
   .screen { display: none; }
   .screen.active { display: block; }
-
-  /* Setup */
   .player-inputs { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; max-height: 320px; overflow-y: auto; padding-right: 4px; }
   .player-row { display: flex; align-items: center; gap: 10px; }
   .player-row .avatar-small {
@@ -65,28 +63,23 @@
     width: 32px; height: 32px; font-size: 18px; cursor: pointer; transition: transform 0.2s;
   }
   .player-row .remove-btn:hover { transform: scale(1.15); }
-
   .btn {
     padding: 14px 32px; border: none; border-radius: 14px; font-size: 1.1em;
     cursor: pointer; transition: all 0.3s; font-weight: 600; margin: 6px;
   }
   .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.5); }
-  .btn-secondary { background: #f0f0f0; color: #555; }
-  .btn-secondary:hover { background: #e0e0e0; }
   .btn-success { background: linear-gradient(135deg, #00b894, #00cec9); color: #fff; }
   .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,184,148,0.5); }
   .btn-add { background: linear-gradient(135deg, #fdcb6e, #e17055); color: #fff; }
   .btn-add:hover { transform: translateY(-2px); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-
   .player-count { color: #888; font-size: 0.9em; margin-bottom: 8px; }
-
-  /* Reveal */
   .reveal-avatar {
     width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px;
     display: flex; align-items: center; justify-content: center;
     font-size: 56px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
   }
   .reveal-name { font-size: 1.6em; font-weight: 700; margin-bottom: 20px; color: #333; }
   .word-card {
@@ -108,16 +101,10 @@
   .word-card.revealed .tap-text { display: none; }
   .word-card.revealed .word { display: block; }
   .pass-info { color: #888; font-size: 0.85em; margin-top: 12px; }
-
-  /* Ready */
   .ready-screen-icon { font-size: 80px; margin-bottom: 16px; }
   .ready-name { font-size: 1.4em; font-weight: 600; color: #555; margin-bottom: 20px; }
-
-  /* Go */
   .go-icon { font-size: 100px; margin-bottom: 16px; }
   .go-text { font-size: 1.4em; color: #555; margin-bottom: 24px; }
-
-  /* Confetti */
   .confetti-container {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; z-index: 999;
@@ -130,12 +117,10 @@
     0% { transform: translateY(0) rotate(0deg); opacity: 1; }
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
   }
-
   .emoji-bg {
     position: absolute; font-size: 120px; opacity: 0.06; top: -20px; right: -20px;
     transform: rotate(15deg); pointer-events: none;
   }
-
   .players-list {
     display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0;
   }
@@ -146,17 +131,17 @@
   .player-chip .chip-avatar {
     width: 28px; height: 28px; border-radius: 50%; display: flex;
     align-items: center; justify-content: center; font-size: 14px; color: #fff;
+    overflow: hidden;
   }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="emoji-bg">🕵️</div>
+  <div class="emoji-bg">&#x1F575;&#xFE0F;</div>
 
-  <!-- SCREEN 1: Setup -->
   <div class="screen active" id="screen-setup">
-    <h1>🕵️ Impostor</h1>
+    <h1>&#x1F575;&#xFE0F; Impostor</h1>
     <p class="subtitle">Enter player names to begin!</p>
     <p class="player-count" id="player-count">3 / 8 players</p>
     <div class="player-inputs" id="player-inputs"></div>
@@ -164,37 +149,34 @@
       <button class="btn btn-add" id="btn-add" onclick="addPlayer()">+ Add Player</button>
     </div>
     <div style="margin-top: 20px;">
-      <button class="btn btn-primary" id="btn-start" onclick="startGame()">🎮 Start Game</button>
+      <button class="btn btn-primary" id="btn-start" onclick="startGame()">&#x1F3AE; Start Game</button>
     </div>
   </div>
 
-  <!-- SCREEN 2: Ready (pass device) -->
   <div class="screen" id="screen-ready">
-    <div class="ready-screen-icon">📱</div>
+    <div class="ready-screen-icon">&#x1F4F1;</div>
     <p class="ready-name" id="ready-name">Pass the device to...</p>
     <button class="btn btn-primary" id="btn-ready" onclick="showReveal()">I'm Ready!</button>
   </div>
 
-  <!-- SCREEN 3: Reveal word -->
   <div class="screen" id="screen-reveal">
-    <div class="reveal-avatar" id="reveal-avatar">🐱</div>
+    <div class="reveal-avatar" id="reveal-avatar"></div>
     <div class="reveal-name" id="reveal-name">Player</div>
     <div class="word-card" id="word-card" onclick="revealWord()">
-      <div class="tap-text">👆 Tap to see your word</div>
+      <div class="tap-text">&#x1F446; Tap to see your word</div>
       <div class="word" id="reveal-word">WORD</div>
     </div>
     <p class="pass-info" id="pass-info">Remember your word, then pass the device!</p>
-    <button class="btn btn-success" id="btn-next" onclick="nextPlayer()" style="display:none;">✅ Got it! Next →</button>
+    <button class="btn btn-success" id="btn-next" onclick="nextPlayer()" style="display:none;">&#x2705; Got it! Next &#x2192;</button>
   </div>
 
-  <!-- SCREEN 4: Go play -->
   <div class="screen" id="screen-go">
-    <div class="go-icon">🎉</div>
+    <div class="go-icon">&#x1F389;</div>
     <h1 style="margin-bottom: 12px;">Let's Go!</h1>
     <p class="go-text">Everyone has their word.<br>Find the impostor!</p>
     <div class="players-list" id="players-list"></div>
     <div style="margin-top: 20px;">
-      <button class="btn btn-primary" onclick="resetGame()">🔄 New Game</button>
+      <button class="btn btn-primary" onclick="resetGame()">&#x1F504; New Game</button>
     </div>
   </div>
 </div>
@@ -202,137 +184,81 @@
 <div class="confetti-container" id="confetti-container"></div>
 
 <script>
-const AVATAR_IMAGES = [
-  'https://impostor-seven-tau.vercel.app/image1.png',
+var BASE = 'https://impostor-seven-tau.vercel.app/';
+var AVATAR_IMAGES = [
+  BASE+'image1.png', BASE+'image2.png', BASE+'image3.png', BASE+'image4.png',
+  BASE+'image5.png', BASE+'image6.png', BASE+'image7.png', BASE+'image8.png'
 ];
-const AVATAR_BGS = ['#ff6b6b','#feca57','#ff9f43','#00b894','#54a0ff','#a29bfe','#636e72','#e17055'];
-let shuffledAvatars = [];
+var AVATAR_BGS = ['#ff6b6b','#feca57','#ff9f43','#00b894','#54a0ff','#a29bfe','#636e72','#e17055'];
 
-function shuffleAvatars(count) {
-  const indices = Array.from({length: count}, (_, i) => i);
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
+var WORDS = [
+  {en:'Banana',de:'Banane'},{en:'Guitar',de:'Gitarre'},{en:'Mountain',de:'Berg'},
+  {en:'Bicycle',de:'Fahrrad'},{en:'Rainbow',de:'Regenbogen'},{en:'Umbrella',de:'Regenschirm'},
+  {en:'Dolphin',de:'Delfin'},{en:'Volcano',de:'Vulkan'},{en:'Pancake',de:'Pfannkuchen'},
+  {en:'Treasure',de:'Schatz'},{en:'Rocket',de:'Rakete'},{en:'Penguin',de:'Pinguin'},
+  {en:'Waterfall',de:'Wasserfall'},{en:'Tornado',de:'Tornado'},{en:'Diamond',de:'Diamant'},
+  {en:'Pirate',de:'Pirat'},{en:'Snowflake',de:'Schneeflocke'},{en:'Butterfly',de:'Schmetterling'},
+  {en:'Castle',de:'Schloss'},{en:'Waffle',de:'Waffel'},{en:'Jellyfish',de:'Qualle'},
+  {en:'Firework',de:'Feuerwerk'},{en:'Dragon',de:'Drache'},{en:'Pretzel',de:'Brezel'},
+  {en:'Elephant',de:'Elefant'},{en:'Coconut',de:'Kokosnuss'},{en:'Igloo',de:'Iglu'},
+  {en:'Popcorn',de:'Popcorn'},{en:'Starfish',de:'Seestern'},{en:'Trampoline',de:'Trampolin'},
+  {en:'Giraffe',de:'Giraffe'},{en:'Candle',de:'Kerze'},{en:'Spaghetti',de:'Spaghetti'},
+  {en:'Airplane',de:'Flugzeug'},{en:'Mushroom',de:'Pilz'},{en:'Cupcake',de:'Cupcake'},
+  {en:'Parrot',de:'Papagei'},{en:'Brownie',de:'Brownie'},
+  {en:'Tottenham',de:'Tottenham'},{en:'Arsenal',de:'Arsenal'},
+  {en:'Harry Kane',de:'Harry Kane'},{en:'Bukayo Saka',de:'Bukayo Saka'},
+  {en:'Yann Sommer',de:'Yann Sommer'},{en:'Xherdan Shaqiri',de:'Xherdan Shaqiri'},
+  {en:'Football',de:'Fussball'},{en:'Goal',de:'Tor'},{en:'Trophy',de:'Pokal'},
+  {en:'Emirates A380',de:'Emirates A380'},{en:'Helicopter',de:'Hubschrauber'},
+  {en:'Hot Air Balloon',de:'Heissluftballon'},
+  {en:'Fondue',de:'Fondue'},{en:'Matterhorn',de:'Matterhorn'},{en:'Davos',de:'Davos'},
+  {en:'Center Parcs',de:'Center Parcs'},{en:'Chocolate',de:'Schokolade'},
+  {en:'Skiing',de:'Skifahren'},{en:'Raclette',de:'Raclette'},{en:'Lake',de:'See'},
+  {en:'Dinosaur',de:'Dinosaurier'},{en:'Unicorn',de:'Einhorn'},{en:'Robot',de:'Roboter'},
+  {en:'Superhero',de:'Superheld'},{en:'Ice Cream',de:'Eiscreme'},{en:'Lollipop',de:'Lutscher'},
+  {en:'Teddy Bear',de:'Teddyb\u00e4r'},{en:'Sandcastle',de:'Sandburg'},
+  {en:'Treehouse',de:'Baumhaus'},{en:'Rollercoaster',de:'Achterbahn'},
+  {en:'Swimming Pool',de:'Schwimmbad'},{en:'Lego',de:'Lego'},{en:'Pikachu',de:'Pikachu'},
+  {en:'Ninja',de:'Ninja'},{en:'Wizard',de:'Zauberer'},{en:'Princess',de:'Prinzessin'},
+  {en:'Treasure Map',de:'Schatzkarte'},{en:'Spaceship',de:'Raumschiff'},
+  {en:'Monster Truck',de:'Monstertruck'},{en:'Water Slide',de:'Wasserrutsche'},
+  {en:'Cotton Candy',de:'Zuckerwatte'},{en:'Pizza',de:'Pizza'},
+  {en:'Crocodile',de:'Krokodil'},{en:'Tiger',de:'Tiger'},{en:'Octopus',de:'Oktopus'},
+  {en:'Snowman',de:'Schneemann'},{en:'Christmas Tree',de:'Weihnachtsbaum'}
+];
+
+var players = [];
+var currentPlayerIndex = 0;
+var impostorIndex = -1;
+var secretWord = null;
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
   }
-  shuffledAvatars = indices.map(i => ({
-    img: AVATAR_IMAGES[i % AVATAR_IMAGES.length],
-    bg: AVATAR_BGS[i]
-  }));
+  return a;
 }
 
-const WORDS = [
-  { en: 'Banana', de: 'Banane' },
-  { en: 'Guitar', de: 'Gitarre' },
-  { en: 'Mountain', de: 'Berg' },
-  { en: 'Bicycle', de: 'Fahrrad' },
-  { en: 'Rainbow', de: 'Regenbogen' },
-  { en: 'Umbrella', de: 'Regenschirm' },
-  { en: 'Dolphin', de: 'Delfin' },
-  { en: 'Volcano', de: 'Vulkan' },
-  { en: 'Pancake', de: 'Pfannkuchen' },
-  { en: 'Treasure', de: 'Schatz' },
-  { en: 'Rocket', de: 'Rakete' },
-  { en: 'Penguin', de: 'Pinguin' },
-  { en: 'Waterfall', de: 'Wasserfall' },
-  { en: 'Tornado', de: 'Tornado' },
-  { en: 'Diamond', de: 'Diamant' },
-  { en: 'Pirate', de: 'Pirat' },
-  { en: 'Snowflake', de: 'Schneeflocke' },
-  { en: 'Butterfly', de: 'Schmetterling' },
-  { en: 'Castle', de: 'Schloss' },
-  { en: 'Waffle', de: 'Waffel' },
-  { en: 'Jellyfish', de: 'Qualle' },
-  { en: 'Firework', de: 'Feuerwerk' },
-  { en: 'Dragon', de: 'Drache' },
-  { en: 'Pretzel', de: 'Brezel' },
-  { en: 'Elephant', de: 'Elefant' },
-  { en: 'Coconut', de: 'Kokosnuss' },
-  { en: 'Igloo', de: 'Iglu' },
-  { en: 'Popcorn', de: 'Popcorn' },
-  { en: 'Starfish', de: 'Seestern' },
-  { en: 'Trampoline', de: 'Trampolin' },
-  { en: 'Giraffe', de: 'Giraffe' },
-  { en: 'Candle', de: 'Kerze' },
-  { en: 'Spaghetti', de: 'Spaghetti' },
-  { en: 'Airplane', de: 'Flugzeug' },
-  { en: 'Mushroom', de: 'Pilz' },
-  { en: 'Cupcake', de: 'Cupcake' },
-  { en: 'Parrot', de: 'Papagei' },
-  { en: 'Brownie', de: 'Brownie' },
-  { en: 'Tottenham', de: 'Tottenham' },
-  { en: 'Arsenal', de: 'Arsenal' },
-  { en: 'Harry Kane', de: 'Harry Kane' },
-  { en: 'Bukayo Saka', de: 'Bukayo Saka' },
-  { en: 'Yann Sommer', de: 'Yann Sommer' },
-  { en: 'Xherdan Shaqiri', de: 'Xherdan Shaqiri' },
-  { en: 'Football', de: 'Fussball' },
-  { en: 'Goal', de: 'Tor' },
-  { en: 'Trophy', de: 'Pokal' },
-  { en: 'Emirates A380', de: 'Emirates A380' },
-  { en: 'Helicopter', de: 'Hubschrauber' },
-  { en: 'Hot Air Balloon', de: 'Heissluftballon' },
-  { en: 'Fondue', de: 'Fondue' },
-  { en: 'Matterhorn', de: 'Matterhorn' },
-  { en: 'Davos', de: 'Davos' },
-  { en: 'Center Parcs', de: 'Center Parcs' },
-  { en: 'Chocolate', de: 'Schokolade' },
-  { en: 'Skiing', de: 'Skifahren' },
-  { en: 'Raclette', de: 'Raclette' },
-  { en: 'Lake', de: 'See' },
-  { en: 'Dinosaur', de: 'Dinosaurier' },
-  { en: 'Unicorn', de: 'Einhorn' },
-  { en: 'Robot', de: 'Roboter' },
-  { en: 'Superhero', de: 'Superheld' },
-  { en: 'Ice Cream', de: 'Eiscreme' },
-  { en: 'Lollipop', de: 'Lutscher' },
-  { en: 'Teddy Bear', de: 'Teddyb\u00e4r' },
-  { en: 'Sandcastle', de: 'Sandburg' },
-  { en: 'Treehouse', de: 'Baumhaus' },
-  { en: 'Rollercoaster', de: 'Achterbahn' },
-  { en: 'Swimming Pool', de: 'Schwimmbad' },
-  { en: 'Lego', de: 'Lego' },
-  { en: 'Pikachu', de: 'Pikachu' },
-  { en: 'Ninja', de: 'Ninja' },
-  { en: 'Wizard', de: 'Zauberer' },
-  { en: 'Princess', de: 'Prinzessin' },
-  { en: 'Treasure Map', de: 'Schatzkarte' },
-  { en: 'Spaceship', de: 'Raumschiff' },
-  { en: 'Monster Truck', de: 'Monstertruck' },
-  { en: 'Water Slide', de: 'Wasserrutsche' },
-  { en: 'Cotton Candy', de: 'Zuckerwatte' },
-  { en: 'Pizza', de: 'Pizza' },
-  { en: 'Crocodile', de: 'Krokodil' },
-  { en: 'Tiger', de: 'Tiger' },
-  { en: 'Octopus', de: 'Oktopus' },
-  { en: 'Snowman', de: 'Schneemann' },
-  { en: 'Christmas Tree', de: 'Weihnachtsbaum' },
-];
-
-let players = [];
-let currentPlayerIndex = 0;
-let impostorIndex = -1;
-let secretWord = '';
-
 function init() {
-  const inputs = document.getElementById('player-inputs');
-  inputs.innerHTML = '';
-  for (let i = 0; i < 3; i++) addPlayer();
+  document.getElementById('player-inputs').innerHTML = '';
+  for (var i = 0; i < 3; i++) addPlayer();
 }
 
 function addPlayer() {
-  const count = document.querySelectorAll('.player-row').length;
+  var count = document.querySelectorAll('.player-row').length;
   if (count >= 8) return;
-  const inputs = document.getElementById('player-inputs');
-  const i = count;
-  const bg = AVATAR_BGS[i];
-  const row = document.createElement('div');
+  var i = count;
+  var bg = AVATAR_BGS[i];
+  var img = AVATAR_IMAGES[i];
+  var row = document.createElement('div');
   row.className = 'player-row';
-  row.innerHTML = `
-    <div class="avatar-small" style="background:${bg}"><img src="${AVATAR_IMAGES[i % AVATAR_IMAGES.length]}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
-    <input type="text" placeholder="Player ${i + 1}" maxlength="16" class="player-name-input">
-    ${i >= 3 ? `<button class="remove-btn" onclick="removePlayer(this)">×</button>` : ''}
-  `;
-  inputs.appendChild(row);
+  row.innerHTML =
+    '<div class="avatar-small" style="background:'+bg+'"><img src="'+img+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>' +
+    '<input type="text" placeholder="Player '+(i+1)+'" maxlength="16" class="player-name-input">' +
+    (i >= 3 ? '<button class="remove-btn" onclick="removePlayer(this)">&times;</button>' : '');
+  document.getElementById('player-inputs').appendChild(row);
   updateCount();
 }
 
@@ -343,18 +269,17 @@ function removePlayer(btn) {
 }
 
 function refreshAvatars() {
-  const rows = document.querySelectorAll('.player-row');
-  rows.forEach((row, i) => {
-    const bg = AVATAR_BGS[i];
-    row.querySelector('.avatar-small').style.background = bg;
-    row.querySelector('.avatar-small').innerHTML = `<img src="${AVATAR_IMAGES[i % AVATAR_IMAGES.length]}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-    row.querySelector('input').placeholder = `Player ${i + 1}`;
-    const rm = row.querySelector('.remove-btn');
+  var rows = document.querySelectorAll('.player-row');
+  rows.forEach(function(row, i) {
+    row.querySelector('.avatar-small').style.background = AVATAR_BGS[i];
+    row.querySelector('.avatar-small').innerHTML = '<img src="'+AVATAR_IMAGES[i]+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+    row.querySelector('input').placeholder = 'Player '+(i+1);
+    var rm = row.querySelector('.remove-btn');
     if (i < 3 && rm) rm.remove();
     if (i >= 3 && !rm) {
-      const b = document.createElement('button');
+      var b = document.createElement('button');
       b.className = 'remove-btn';
-      b.textContent = '×';
+      b.innerHTML = '&times;';
       b.onclick = function() { removePlayer(this); };
       row.appendChild(b);
     }
@@ -362,22 +287,28 @@ function refreshAvatars() {
 }
 
 function updateCount() {
-  const c = document.querySelectorAll('.player-row').length;
-  document.getElementById('player-count').textContent = `${c} / 8 players`;
+  var c = document.querySelectorAll('.player-row').length;
+  document.getElementById('player-count').textContent = c + ' / 8 players';
   document.getElementById('btn-add').disabled = c >= 8;
   document.getElementById('btn-start').disabled = c < 3;
 }
 
 function startGame() {
-  const inputs = document.querySelectorAll('.player-name-input');
-  players = [];
-  inputs.forEach((inp, i) => {
-    players.push({ name: inp.value.trim() || `Player ${i + 1}`, img: AVATAR_IMAGES[i % AVATAR_IMAGES.length], bg: AVATAR_BGS[i] });
+  var inputs = document.querySelectorAll('.player-name-input');
+  var names = [];
+  inputs.forEach(function(inp, i) {
+    names.push(inp.value.trim() || ('Player ' + (i+1)));
   });
-  if (players.length < 3) return;
+  if (names.length < 3) return;
 
-  const wordObj = WORDS[Math.floor(Math.random() * WORDS.length)];
-  secretWord = wordObj;
+  // Randomly assign avatars
+  var avatarIndices = shuffle([0,1,2,3,4,5,6,7]).slice(0, names.length);
+  players = names.map(function(name, i) {
+    var ai = avatarIndices[i];
+    return { name: name, img: AVATAR_IMAGES[ai], bg: AVATAR_BGS[ai] };
+  });
+
+  secretWord = WORDS[Math.floor(Math.random() * WORDS.length)];
   impostorIndex = Math.floor(Math.random() * players.length);
   currentPlayerIndex = 0;
 
@@ -386,37 +317,36 @@ function startGame() {
 }
 
 function updateReady() {
-  const p = players[currentPlayerIndex];
+  var p = players[currentPlayerIndex];
   document.getElementById('ready-name').innerHTML =
-    `Pass the device to <strong>${p.name}</strong><br><img src="${p.img}" style="width:60px;height:60px;border-radius:50%;margin-top:10px;object-fit:cover;">`;
+    'Pass the device to <strong>'+p.name+'</strong><br><img src="'+p.img+'" style="width:60px;height:60px;border-radius:50%;margin-top:10px;object-fit:cover;">';
 }
 
 function showReveal() {
-  const p = players[currentPlayerIndex];
-  const isImpostor = currentPlayerIndex === impostorIndex;
+  var p = players[currentPlayerIndex];
+  var isImpostor = currentPlayerIndex === impostorIndex;
 
-  document.getElementById('reveal-avatar').innerHTML = `<img src="${p.img}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  document.getElementById('reveal-avatar').innerHTML = '<img src="'+p.img+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
   document.getElementById('reveal-avatar').style.background = p.bg;
   document.getElementById('reveal-name').textContent = p.name;
 
-  const wordEl = document.getElementById('reveal-word');
+  var wordEl = document.getElementById('reveal-word');
   if (isImpostor) {
     wordEl.innerHTML = 'IMPOSTOR';
+    wordEl.className = 'word impostor-word';
   } else {
     wordEl.innerHTML = secretWord.en + '<br><span style="font-size:0.55em;opacity:0.7;-webkit-text-fill-color:#888;">' + secretWord.de + '</span>';
+    wordEl.className = 'word';
   }
-  wordEl.className = isImpostor ? 'word impostor-word' : 'word';
 
-  const card = document.getElementById('word-card');
-  card.classList.remove('revealed');
+  document.getElementById('word-card').classList.remove('revealed');
   document.getElementById('btn-next').style.display = 'none';
   document.getElementById('pass-info').style.display = 'block';
-
   showScreen('screen-reveal');
 }
 
 function revealWord() {
-  const card = document.getElementById('word-card');
+  var card = document.getElementById('word-card');
   if (card.classList.contains('revealed')) return;
   card.classList.add('revealed');
   document.getElementById('btn-next').style.display = 'inline-block';
@@ -433,17 +363,17 @@ function nextPlayer() {
 }
 
 function showGoScreen() {
-  const list = document.getElementById('players-list');
+  var list = document.getElementById('players-list');
   list.innerHTML = '';
-  players.forEach(p => {
-    list.innerHTML += `<div class="player-chip"><div class="chip-avatar" style="background:${p.bg}"><img src="${p.img}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>${p.name}</div>`;
+  players.forEach(function(p) {
+    list.innerHTML += '<div class="player-chip"><div class="chip-avatar" style="background:'+p.bg+'"><img src="'+p.img+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>'+p.name+'</div>';
   });
   showScreen('screen-go');
   launchConfetti();
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
 }
 
@@ -452,11 +382,11 @@ function resetGame() {
 }
 
 function launchConfetti() {
-  const container = document.getElementById('confetti-container');
+  var container = document.getElementById('confetti-container');
   container.innerHTML = '';
-  const colors = ['#ff6b6b','#feca57','#ff9f43','#00b894','#54a0ff','#a29bfe','#e84393','#fd79a8'];
-  for (let i = 0; i < 60; i++) {
-    const piece = document.createElement('div');
+  var colors = ['#ff6b6b','#feca57','#ff9f43','#00b894','#54a0ff','#a29bfe','#e84393','#fd79a8'];
+  for (var i = 0; i < 60; i++) {
+    var piece = document.createElement('div');
     piece.className = 'confetti-piece';
     piece.style.left = Math.random() * 100 + '%';
     piece.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -466,7 +396,7 @@ function launchConfetti() {
     piece.style.height = (6 + Math.random() * 8) + 'px';
     container.appendChild(piece);
   }
-  setTimeout(() => container.innerHTML = '', 4000);
+  setTimeout(function() { container.innerHTML = ''; }, 4000);
 }
 
 init();
